@@ -13,9 +13,9 @@
 		<key>CFBundleInfoDictionaryVersion</key>
 		<string>6.0</string>
 		<key>CFBundleName</key>
-		<string>My app</string>
+		<string>Antiphrasis</string>
 		<key>CFBundleDisplayName</key>
-		<string>myapp</string>
+		<string>antiphrasis</string>
 		<key>CFBundlePackageType</key>
 		<string>APPL</string>
 		<key>CFBundleShortVersionString</key>

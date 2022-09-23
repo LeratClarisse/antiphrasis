@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.myapp.app">
+    package="com.antiphrasis.app">
    <application
-        android:label="My App"
+        android:label="Antiphrasis"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity
