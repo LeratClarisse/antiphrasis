@@ -5,12 +5,25 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text('App title'),
-      ),
-      body: const Center()
+    final ButtonStyle style = ElevatedButton.styleFrom(
+      textStyle: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+      fixedSize: const Size(200, 70),
+      padding: const EdgeInsets.all(0),
     );
+
+    return Scaffold(
+        body: Center(
+      child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+        const AspectRatio(
+            aspectRatio: 1.2,
+            child: Image(image: AssetImage("assets/icons/logo_full.png"))),
+        const SizedBox(height: 40),
+        ElevatedButton(
+          style: style,
+          onPressed: () {},
+          child: const Text('Jouer'),
+        ),
+      ]),
+    ));
   }
 }
