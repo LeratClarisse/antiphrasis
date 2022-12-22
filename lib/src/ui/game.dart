@@ -14,10 +14,16 @@ class Game extends StatefulWidget {
 }
 
 class _GameState extends State<Game> {
+  final fieldText = TextEditingController();
+
   @override
   void initState() {
     bloc.fetchGameCardListForGroup(widget.groupId);
     super.initState();
+  }
+
+  void clearText() {
+    fieldText.clear();
   }
 
   @override
@@ -34,10 +40,12 @@ class _GameState extends State<Game> {
                 stream: bloc.gamecard,
                 builder: (context, AsyncSnapshot<GameCard?> snapshot) {
                   if (snapshot.hasData) {
-                    return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                    return Center(
+                        child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
                       Text(snapshot.data!.question),
                       const SizedBox(height: 30),
                       TextField(
+                        controller: fieldText,
                         onSubmitted: (String answer) {
                           if (bloc.checkAnswer(answer)) {
                             showDialog<String>(
@@ -52,10 +60,14 @@ class _GameState extends State<Game> {
                                               MaterialPageRoute(builder: (context) => const Home()),
                                             );
                                           },
-                                          child: const Text('Retour'),
+                                          child: const Text('Accueil'),
                                         ),
                                         TextButton(
-                                          onPressed: () => bloc.getNextGameCard(),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                            clearText();
+                                            bloc.getNextGameCard();
+                                          },
                                           child: const Text('Suivant'),
                                         ),
                                       ],
@@ -73,7 +85,7 @@ class _GameState extends State<Game> {
                         textInputAction: TextInputAction.done,
                         decoration: const InputDecoration(hintText: 'Réponse'),
                       )
-                    ]);
+                    ]));
                   } else if (snapshot.hasError) {
                     return Text(snapshot.error.toString());
                   } else {

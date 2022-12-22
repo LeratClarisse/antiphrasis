@@ -14,6 +14,8 @@ class GameCardBloc {
   Stream<GameCard?> get gamecard => _currentGamecardFetcher.stream;
 
   fetchGameCardListForGroup(int groupId) async {
+    _currentGamecard = null;
+    
     _gamecardsOfGroup = await _repository.fetchGameCardListForGroup(groupId);
     _gamecardsFetcher.sink.add(_gamecardsOfGroup);
 
@@ -22,7 +24,7 @@ class GameCardBloc {
 
   getNextGameCard() async {
     // A changer quand il y a aura les groupes et la continuité
-    int nextIndex = _currentGamecard == null ? 0 : _currentGamecard!.id + 1;
+    int nextIndex = _currentGamecard == null ? 1 : _currentGamecard!.id + 1;
 
     try {
       _currentGamecard = _gamecardsOfGroup.firstWhere((gc) => gc.id == nextIndex);
@@ -32,11 +34,12 @@ class GameCardBloc {
   }
 
   bool checkAnswer(String answer){
-    return answer.toLowerCase() == _currentGamecard!.answer.toLowerCase();
+    return answer.toLowerCase().trim() == _currentGamecard!.answer.toLowerCase();
   }
 
   dispose() {
     _gamecardsFetcher.close();
+    _currentGamecardFetcher.close();
   }
 }
 
