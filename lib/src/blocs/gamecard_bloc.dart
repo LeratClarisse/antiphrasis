@@ -4,18 +4,39 @@ import 'package:rxdart/rxdart.dart';
 
 class GameCardBloc {
   final _repository = Repository();
-  final _gamecardFetcher = PublishSubject<List<GameCard>>();
-  List<GameCard> gamecards = [];
+  final _gamecardsFetcher = PublishSubject<List<GameCard>>();
+  final _currentGamecardFetcher = PublishSubject<GameCard?>();
 
-  Stream<List<GameCard>> get gamecardsForGroup => _gamecardFetcher.stream;
+  List<GameCard> _gamecardsOfGroup = [];
+  GameCard? _currentGamecard;
 
-  fetchGameCardListForGroup(groupId) async {
-    gamecards = await _repository.fetchGameCardListForGroup(groupId);
-    _gamecardFetcher.sink.add(gamecards);
+  Stream<List<GameCard>> get gamecardsForGroup => _gamecardsFetcher.stream;
+  Stream<GameCard?> get gamecard => _currentGamecardFetcher.stream;
+
+  fetchGameCardListForGroup(int groupId) async {
+    _gamecardsOfGroup = await _repository.fetchGameCardListForGroup(groupId);
+    _gamecardsFetcher.sink.add(_gamecardsOfGroup);
+
+    getNextGameCard();
+  }
+
+  getNextGameCard() async {
+    // A changer quand il y a aura les groupes et la continuité
+    int nextIndex = _currentGamecard == null ? 0 : _currentGamecard!.id + 1;
+
+    try {
+      _currentGamecard = _gamecardsOfGroup.firstWhere((gc) => gc.id == nextIndex);
+      _currentGamecardFetcher.sink.add(null);
+      _currentGamecardFetcher.sink.add(_currentGamecard);
+    } on Exception catch (_) {}
+  }
+
+  bool checkAnswer(String answer){
+    return answer.toLowerCase() == _currentGamecard!.answer.toLowerCase();
   }
 
   dispose() {
-    _gamecardFetcher.close();
+    _gamecardsFetcher.close();
   }
 }
 

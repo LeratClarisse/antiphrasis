@@ -21,7 +21,7 @@ class Home extends StatelessWidget {
           style: style,
           onPressed: () {
             Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => const Game()),
+              MaterialPageRoute(builder: (context) => const Game(1)),
             );
           },
           child: const Text('Jouer'),
