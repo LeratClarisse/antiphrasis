@@ -1,4 +1,4 @@
-import 'package:antiphrasis/src/ui/game.dart';
+import 'package:antiphrasis/src/ui/choose_level.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatelessWidget {
@@ -21,7 +21,7 @@ class Home extends StatelessWidget {
           style: style,
           onPressed: () {
             Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => const Game(1)),
+              MaterialPageRoute(builder: (context) => const ChooseLevel()),
             );
           },
           child: const Text('Jouer'),
