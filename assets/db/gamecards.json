@@ -1,0 +1,32 @@
+{
+    "gamecards": [
+        {
+            "Id": 1,
+            "Question": "La Reine Tigre",
+            "Answer": "Le Roi Lion",
+            "Done": 0,
+            "GroupId": 1
+        },
+        {
+            "Id": 2,
+            "Question": "Opération faisable",
+            "Answer": "Mission impossible",
+            "Done": 0,
+            "GroupId": 1
+        },
+        {
+            "Id": 3,
+            "Question": "Vis aujourd'hui",
+            "Answer": "Meurs un autre jour",
+            "Done": 0,
+            "GroupId": 1
+        },
+        {
+            "Id": 4,
+            "Question": "La Courbe rouge",
+            "Answer": "La Ligne verte",
+            "Done": 0,
+            "GroupId": 1
+        }
+    ]
+}
