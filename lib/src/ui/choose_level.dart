@@ -28,14 +28,31 @@ class _ChooseLevelState extends State<ChooseLevel> {
         children: listContent(),
         expansionCallback: (i, isOpen) {
           setState(() {
-            _isOpen[i] = !isOpen;
+            if (isOpen) {
+              _isOpen[i] = !isOpen;
+            } else {
+              for (int j = 0; j < _isOpen.length; j++) {
+                if (i == j) {
+                  _isOpen[j] = !isOpen;
+                } else {
+                  _isOpen[j] = isOpen;
+                }
+              }
+            }
           });
         });
   }
 
   GridView gridLayout() {
     return GridView.count(
-        primary: false, padding: const EdgeInsets.all(20), crossAxisSpacing: 10, mainAxisSpacing: 10, crossAxisCount: 5, children: gridContent());
+        scrollDirection: Axis.vertical,
+        shrinkWrap: true,
+        primary: false,
+        padding: const EdgeInsets.all(20),
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+        crossAxisCount: 5,
+        children: gridContent());
   }
 
   List<ExpansionPanel> listContent() {
@@ -45,17 +62,17 @@ class _ChooseLevelState extends State<ChooseLevel> {
           canTapOnHeader: true,
           isExpanded: _isOpen[0],
           headerBuilder: (context, isOpen) {
-            return const Center(child: Text("Group 0", textAlign: TextAlign.center));
+            return const Center(child: Text("Group 1", textAlign: TextAlign.center));
           },
-          body: const Text("Group 0")),
+          body: gridLayout()),
       ExpansionPanel(
           backgroundColor: Colors.greenAccent[200],
           canTapOnHeader: true,
           isExpanded: _isOpen[1],
           headerBuilder: (context, isOpen) {
-            return const Center(child: Text("Group 1", textAlign: TextAlign.center));
+            return const Center(child: Text("Group 2", textAlign: TextAlign.center));
           },
-          body: const Text("Group 1"))
+          body: gridLayout())
     ];
   }
 
