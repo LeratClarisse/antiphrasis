@@ -14,6 +14,10 @@ class GroupProvider {
       return Group.fromJson(maps[i]);
     });
 
+    for (Group group in groups) {
+      group.nbLevelsInGroup = Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM GameCard WHERE GroupId = ' + group.id.toString())) ?? 0;
+    }
+
     DbTools.deleteDB();
     return groups;
   }

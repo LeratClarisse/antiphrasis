@@ -1,5 +1,8 @@
+import 'package:antiphrasis/src/models/group.dart';
 import 'package:antiphrasis/src/ui/home.dart';
 import 'package:flutter/material.dart';
+
+import '../blocs/group_bloc.dart';
 
 class ChooseLevel extends StatefulWidget {
   const ChooseLevel({Key? key}) : super(key: key);
@@ -12,6 +15,12 @@ class _ChooseLevelState extends State<ChooseLevel> {
   final List<bool> _isOpen = [false, false];
 
   @override
+  void initState() {
+    bloc.fetchGroupList();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return WillPopScope(
         onWillPop: () async {
@@ -20,12 +29,30 @@ class _ChooseLevelState extends State<ChooseLevel> {
           );
           return false;
         },
-        child: Scaffold(body: Center(child: SingleChildScrollView(child: Container(child: listLayout())))));
+        child: Scaffold(
+            body: StreamBuilder(
+                stream: bloc.allGroups,
+                builder: (context, AsyncSnapshot<List<Group>?> snapshot) {
+                  if (snapshot.hasData) {
+                    return Center(child: SingleChildScrollView(child: Container(child: listLayout(snapshot.data!))));
+                  } else {
+                    return const Text('Something bad happenned');
+                  }
+                })));
   }
 
-  ExpansionPanelList listLayout() {
+  ExpansionPanelList listLayout(List<Group> groups) {
     return ExpansionPanelList(
-        children: listContent(),
+        children: groups.asMap().entries.map((MapEntry<int, Group> entry) {
+          return ExpansionPanel(
+              backgroundColor: Colors.greenAccent[200],
+              canTapOnHeader: true,
+              isExpanded: _isOpen[entry.key],
+              headerBuilder: (context, isOpen) {
+                return Center(child: Text(entry.value.name, textAlign: TextAlign.center));
+              },
+              body: gridLayout(entry.value.nbLevelsInGroup));
+        }).toList(),
         expansionCallback: (i, isOpen) {
           setState(() {
             if (isOpen) {
@@ -43,7 +70,7 @@ class _ChooseLevelState extends State<ChooseLevel> {
         });
   }
 
-  GridView gridLayout() {
+  GridView gridLayout(int nbLevelsInGroup) {
     return GridView.count(
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
@@ -52,72 +79,16 @@ class _ChooseLevelState extends State<ChooseLevel> {
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
         crossAxisCount: 5,
-        children: gridContent());
+        children: gridContent(nbLevelsInGroup));
   }
 
-  List<ExpansionPanel> listContent() {
-    return <ExpansionPanel>[
-      ExpansionPanel(
-          backgroundColor: Colors.greenAccent[200],
-          canTapOnHeader: true,
-          isExpanded: _isOpen[0],
-          headerBuilder: (context, isOpen) {
-            return const Center(child: Text("Group 1", textAlign: TextAlign.center));
-          },
-          body: gridLayout()),
-      ExpansionPanel(
-          backgroundColor: Colors.greenAccent[200],
-          canTapOnHeader: true,
-          isExpanded: _isOpen[1],
-          headerBuilder: (context, isOpen) {
-            return const Center(child: Text("Group 2", textAlign: TextAlign.center));
-          },
-          body: gridLayout())
-    ];
-  }
-
-  List<Container> gridContent() {
-    return <Container>[
-      Container(
+  List<Container> gridContent(int nbLevelsInGroup) {
+    return List.generate(nbLevelsInGroup, (index) {
+      return Container(
         padding: const EdgeInsets.all(8),
         color: Colors.teal[300],
-        child: const Text('1'),
-      ),
-      Container(
-        padding: const EdgeInsets.all(8),
-        color: Colors.teal[300],
-        child: const Text('2'),
-      ),
-      Container(
-        padding: const EdgeInsets.all(8),
-        color: Colors.teal[300],
-        child: const Text('3'),
-      ),
-      Container(
-        padding: const EdgeInsets.all(8),
-        color: Colors.teal[300],
-        child: const Text('4'),
-      ),
-      Container(
-        padding: const EdgeInsets.all(8),
-        color: Colors.teal[300],
-        child: const Text('5'),
-      ),
-      Container(
-        padding: const EdgeInsets.all(8),
-        color: Colors.teal[300],
-        child: const Text('6'),
-      ),
-      Container(
-        padding: const EdgeInsets.all(8),
-        color: Colors.teal[300],
-        child: const Text('7'),
-      ),
-      Container(
-        padding: const EdgeInsets.all(8),
-        color: Colors.teal[300],
-        child: const Text('8'),
-      )
-    ];
+        child: Text((index + 1) as String),
+      );
+    });
   }
 }

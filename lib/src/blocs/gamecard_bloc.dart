@@ -15,7 +15,7 @@ class GameCardBloc {
 
   fetchGameCardListForGroup(int groupId) async {
     _currentGamecard = null;
-    
+
     _gamecardsOfGroup = await _repository.fetchGameCardListForGroup(groupId);
     _gamecardsFetcher.sink.add(_gamecardsOfGroup);
 
@@ -33,7 +33,7 @@ class GameCardBloc {
     } on Exception catch (_) {}
   }
 
-  bool checkAnswer(String answer){
+  bool checkAnswer(String answer) {
     return answer.toLowerCase().trim() == _currentGamecard!.answer.toLowerCase();
   }
 
