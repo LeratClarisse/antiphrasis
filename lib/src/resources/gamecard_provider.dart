@@ -1,38 +1,36 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:antiphrasis/src/models/gamecard.dart';
-import 'package:antiphrasis/src/utils/db_tools.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class GameCardProvider {
-  Future<List<GameCard>> fetchGameCardListForGroup(int groupdId) async {
-    if (!kIsWeb) {
-      Database db = await DbTools.initDB();
-      final List<Map<String, dynamic>> maps;
+  Future<List<GameCard>> fetchGamecardsForGroup(int groupId) async {
+    List<GameCard> gamecards = await _fetchGameCardList();
+    return gamecards.where((g) => g.groupId == groupId).toList();
+  }
 
-      maps = await db.query('GameCard', where: 'GroupId = ?', whereArgs: [groupdId]);
+  Future<int> countGamecardsInGroup(int groupId) async {
+    List<GameCard> gamecards = await _fetchGameCardList();
+    return gamecards.where((g) => g.groupId == groupId).length;
+  }
 
-      List<GameCard> gamecards = List.generate(maps.length, (i) {
-        return GameCard.fromJson(maps[i]);
-      });
+  Future<List<GameCard>> _fetchGameCardList() async {
+    Box boxGamecards = await Hive.openBox('gamecards');
 
-      DbTools.deleteDB();
-      return gamecards;
-    } else {
-      final gamecardJson = await rootBundle.loadString('assets/db/gamecards.json');
-
-      if (gamecardJson.isNotEmpty) {
-        Iterable l = json.decode(gamecardJson)['gamecards'];
-        List<GameCard> gamecards = List<GameCard>.from(l.map((model) => GameCard.fromJson(model)));
-
-        gamecards = gamecards.where((q) => q.groupId == groupdId).toList();
-
-        return gamecards;
-      } else {
-        throw Exception('Failed to load game cards');
-      }
+    if (!boxGamecards.containsKey('gamecardList')) {
+      await _initGamecardBox();
     }
+
+    return boxGamecards.get("gamecardList");
+  }
+
+  Future<void> _initGamecardBox() async {
+    Box boxGamecards = await Hive.openBox('gamecards');
+    final gamecardsJson = await rootBundle.loadString('assets/db/datas.json');
+
+    List<GameCard> groups = List<GameCard>.from(json.decode(gamecardsJson)['gamecards'].map((model) => GameCard.fromJson(model)));
+
+    boxGamecards.put('gamecardList', groups);
   }
 }

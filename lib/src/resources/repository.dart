@@ -7,8 +7,8 @@ import 'package:antiphrasis/src/resources/group_provider.dart';
 class Repository {
   final groupProvider = GroupProvider();
   final gameCardProvider = GameCardProvider();
-  
+
   Future<List<Group>> fetchGroupList() => groupProvider.fetchGroupList();
 
-  Future<List<GameCard>> fetchGameCardListForGroup(int groupId) => gameCardProvider.fetchGameCardListForGroup(groupId);
+  Future<List<GameCard>> fetchGamecardsForGroup(int groupId) => gameCardProvider.fetchGamecardsForGroup(groupId);
 }

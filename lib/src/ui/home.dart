@@ -20,7 +20,7 @@ class Home extends StatelessWidget {
         ElevatedButton(
           style: style,
           onPressed: () {
-            Navigator.of(context).pushReplacement(
+            Navigator.of(context).push(
               MaterialPageRoute(builder: (context) => const ChooseLevel()),
             );
           },

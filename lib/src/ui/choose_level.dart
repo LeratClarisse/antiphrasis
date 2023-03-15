@@ -1,4 +1,5 @@
 import 'package:antiphrasis/src/models/group.dart';
+import 'package:antiphrasis/src/ui/game.dart';
 import 'package:antiphrasis/src/ui/home.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +13,7 @@ class ChooseLevel extends StatefulWidget {
 }
 
 class _ChooseLevelState extends State<ChooseLevel> {
-  final List<bool> _isOpen = [false, false];
+  List<bool> _isOpen = [];
 
   @override
   void initState() {
@@ -22,23 +23,25 @@ class _ChooseLevelState extends State<ChooseLevel> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-        onWillPop: () async {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const Home()),
-          );
-          return false;
-        },
-        child: Scaffold(
+    return Scaffold(
+            appBar: AppBar(
+              centerTitle: true,
+              title: const Text('Antiphrasis'),
+            ),
             body: StreamBuilder(
                 stream: bloc.allGroups,
                 builder: (context, AsyncSnapshot<List<Group>?> snapshot) {
                   if (snapshot.hasData) {
+                    if (_isOpen.isEmpty) {
+                      for (int i = 0; i < snapshot.data!.length; i++) {
+                        _isOpen.add(false);
+                      }
+                    }
                     return Center(child: SingleChildScrollView(child: Container(child: listLayout(snapshot.data!))));
                   } else {
                     return const Text('Something bad happenned');
                   }
-                })));
+                }));
   }
 
   ExpansionPanelList listLayout(List<Group> groups) {
@@ -51,7 +54,7 @@ class _ChooseLevelState extends State<ChooseLevel> {
               headerBuilder: (context, isOpen) {
                 return Center(child: Text(entry.value.name, textAlign: TextAlign.center));
               },
-              body: gridLayout(entry.value.nbLevelsInGroup));
+              body: gridLayout(entry.value.nbLevelsInGroup, entry.value.id));
         }).toList(),
         expansionCallback: (i, isOpen) {
           setState(() {
@@ -70,7 +73,7 @@ class _ChooseLevelState extends State<ChooseLevel> {
         });
   }
 
-  GridView gridLayout(int nbLevelsInGroup) {
+  GridView gridLayout(int nbLevelsInGroup, int groupId) {
     return GridView.count(
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
@@ -79,16 +82,23 @@ class _ChooseLevelState extends State<ChooseLevel> {
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
         crossAxisCount: 5,
-        children: gridContent(nbLevelsInGroup));
+        children: gridContent(nbLevelsInGroup, groupId));
   }
 
-  List<Container> gridContent(int nbLevelsInGroup) {
+  List<GestureDetector> gridContent(int nbLevelsInGroup, int groupId) {
     return List.generate(nbLevelsInGroup, (index) {
-      return Container(
-        padding: const EdgeInsets.all(8),
-        color: Colors.teal[300],
-        child: Text((index + 1) as String),
-      );
+      int index1Base = index + 1;
+      return GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => Game(groupId, index)),
+            );
+          },
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            color: Colors.teal[300],
+            child: Text(index1Base.toString()),
+          ));
     });
   }
 }

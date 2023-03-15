@@ -28,5 +28,23 @@
             "Done": 0,
             "GroupId": 1
         }
+    ],
+    "groups": [
+        {
+            "Id": 1,
+            "Name": "Groupe 1"
+        },
+        {
+            "Id": 2,
+            "Name": "Groupe 2"
+        },
+        {
+            "Id": 3,
+            "Name": "Groupe 3"
+        },
+        {
+            "Id": 4,
+            "Name": "Groupe 4"
+        }
     ]
 }
