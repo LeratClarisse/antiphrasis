@@ -1,6 +1,5 @@
 import 'package:antiphrasis/src/models/group.dart';
 import 'package:antiphrasis/src/ui/game.dart';
-import 'package:antiphrasis/src/ui/home.dart';
 import 'package:flutter/material.dart';
 
 import '../blocs/group_bloc.dart';
@@ -13,7 +12,7 @@ class ChooseLevel extends StatefulWidget {
 }
 
 class _ChooseLevelState extends State<ChooseLevel> {
-  List<bool> _isOpen = [];
+  final List<bool> _isOpen = [];
 
   @override
   void initState() {

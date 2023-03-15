@@ -6,7 +6,6 @@ class GameCardBloc {
   final _repository = Repository();
   final _gamecardsFetcher = PublishSubject<List<GameCard>>();
   final _currentGamecardFetcher = PublishSubject<GameCard?>();
-  final _isLastQuestionFetcher = PublishSubject<bool>();
 
   List<GameCard> _gamecardsOfGroup = [];
   GameCard? _currentGamecard;
